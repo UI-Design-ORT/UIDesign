@@ -80,7 +80,8 @@ export default function SignUp() {
     password: '',
     ci: '',
     city: '',
-    country: 'Uruguay'
+    country: 'Uruguay',
+    medalAchievement: 'level0'
   });
 
   const handleChange = (event) => {
