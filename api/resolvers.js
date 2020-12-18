@@ -7,6 +7,24 @@ const { generateToken } = require("./auth");
 const userResolver = async (root, args, ctx, info) => {
     const userId = ctx.user._id;
     const user = await User.findById(userId);
+    const userProducts = await Product.find({
+        where: {
+            userId: userId
+        }
+    });
+    console.log("productos del usuario" + userProducts);
+    user.products = userProducts;
+    if (user.medalAchievement !== undefined) {
+        if (userProducts.length > 0 && userProducts.length < 5) {
+            user.medalAchievement = 'level1';
+        } else if (userProducts.length < 10) {
+            user.medalAchievement = 'level2';
+        } else if (userProducts.length >= 10) {
+            user.medalAchievement = 'level3';
+        }
+    }
+
+    await user.save();
     return user;
 }
 
@@ -76,6 +94,7 @@ const uploadProductResolver = async (
         quantity,
         productImage
     });
+    newProduct.userId = ctx.user._id;
     await newProduct.save();
     return newProduct.toJSON();
 };
@@ -91,7 +110,7 @@ const removeProductResolver = async (
     const product = await Product.findById(productId);
     var included = user.products.includes(product);
 
-    if(!included) {
+    if (!included) {
         throw new Error("No puedes eliminar una prenda que no sea tuya.");
     }
 
@@ -101,7 +120,7 @@ const removeProductResolver = async (
 
 const updateUserResolver = async (
     root,
-    { input: { username, password, firstname, lastname, email, country, city, profileImage } }, 
+    { input: { username, password, firstname, lastname, email, country, city, profileImage } },
     ctx,
     info
 ) => {

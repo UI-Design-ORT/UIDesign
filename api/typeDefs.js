@@ -11,7 +11,8 @@ const typeDefs = gql`
         dni: String!
         country: String
         city: String
-        profileImage: String
+        profileImage: String 
+        medalAchievement: String
         products: [Product]
     }
 
@@ -28,6 +29,7 @@ const typeDefs = gql`
 
     type Product {
         id: ID!
+        userId: ID
         title: String
         size: String
         quantity: Int

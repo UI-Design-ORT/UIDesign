@@ -8,9 +8,15 @@ import {
   CardContent,
   Divider,
   Typography,
-  makeStyles
+  makeStyles,
+  useRadioGroup
 } from '@material-ui/core';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import logo from '../assets/0productos.png';
+import logo1 from '../assets/1producto.png';
+import logo2 from '../assets/5productos.png';
+import logo3 from '../assets/10productos.png';
+import { useToken } from "../AuthProvider";
 
 const UPDATE_USER_MUTATION = gql`
   mutation UpdateUser($input: UserInput!) {
@@ -28,15 +34,30 @@ const UPDATE_USER_MUTATION = gql`
   }
 `;
 
+const USER_QUERY = gql`
+  query User{
+    user {
+        firstname
+        lastname
+        city
+        country
+        email
+        dni
+        profileImage
+        medalAchievement
+    }
+  }
+`;
+
 const useStyles = makeStyles(() => ({
   avatar: {
     height: 100,
     width: 100
   },
   input: {
-      display: 'none',
-      margin: '8px',
-      minWidth: '150px',
+    display: 'none',
+    margin: '8px',
+    minWidth: '150px',
   }
 }));
 
@@ -47,21 +68,58 @@ const toBase64 = file => new Promise((resolve, reject) => {
   reader.onerror = error => reject(error);
 });
 
-const Profile = ({ user, setUser }) => {
+const Profile = () => {/* { user, setUser } */
   const classes = useStyles();
+
+  const [medal, setMedal] = React.useState({
+    achievement: 'No has subido productos',
+    logo: logo
+  })
+
+  const { token } = useToken();
+  const { data, loading, refetch } = useQuery(USER_QUERY);
+  React.useEffect(() => {
+    refetch();
+  }, [refetch, token]);
+  const { user } = data || {};
+
   const [updateUserMutation] = useMutation(UPDATE_USER_MUTATION);
   const [avatar, setAvatar] = React.useState({
-    avatar: user.profileImage,
+    avatar: "user.profileImage",
     raw: ''
   })
 
+  if (loading) {
+    return <p>Aguarde un momento...</p>
+  }
+  //setUser(userData);
+  console.log('usuario: ' + user.firstname);
+
+
+  if (user?.medalAchievement === 'level1') {
+    setMedal({
+      achievement: 'Has subido al menos 1 producto!',
+      logo: logo1
+    })
+  } else if (user?.medalAchievement === 'level2') {
+    setMedal({
+      achievement: '5 productos subidos o mas!',
+      logo: logo2
+    })
+  } else if (user?.medalAchievement === 'level3') {
+    setMedal({
+      achievement: '10 productos subidos o mas!',
+      logo: logo3
+    })
+  }
+
   const handleImageChange = async (event) => {
-    if(event.target.files.length){
+    if (event.target.files.length) {
       const file = event.target.files[0];
       const result = await toBase64(file).catch(e => Error(e));
       setAvatar({
-          avatar: URL.createObjectURL(event.target.files[0]),
-          raw: result
+        avatar: URL.createObjectURL(event.target.files[0]),
+        raw: result
       });
     }
     const { data } = await updateUserMutation({
@@ -71,8 +129,8 @@ const Profile = ({ user, setUser }) => {
         }
       }
     })
-    setUser(data.updateUser);
-    console.log("Imagen seleccionada: "+ avatar.raw);
+    //setUser(data.updateUser);
+    console.log("Imagen seleccionada: " + avatar.raw);
   }
 
 
@@ -98,6 +156,12 @@ const Profile = ({ user, setUser }) => {
           >
             {`${user.city}, ${user.country}`}
           </Typography>
+          <Avatar src={medal.logo}></Avatar>
+          <Typography
+            color="textSecondary"
+            variant="body1">{medal.achievement}
+          </Typography>
+          { }
         </Box>
       </CardContent>
       <Divider />
@@ -118,7 +182,7 @@ const Profile = ({ user, setUser }) => {
             Subir una foto
           </Button>
         </label>
-        
+
       </CardActions>
     </Card>
   );

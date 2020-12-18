@@ -9,7 +9,8 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { useToken } from "../AuthProvider";
 
 const UPDATE_USER_MUTATION = gql`
   mutation UpdateUser($input: UserInput!) {
@@ -23,6 +24,20 @@ const UPDATE_USER_MUTATION = gql`
       email
       dni
       profileImage
+    }
+  }
+`;
+
+const USER_QUERY = gql`
+  query User{
+    user{
+        firstname
+        lastname
+        city
+        country
+        email
+        dni
+        medalAchievement
     }
   }
 `;
@@ -54,16 +69,35 @@ const cities = [
   }
 ];
 
-const ProfileDetails = ({ user, setUser }) => {
+const ProfileDetails = () => {/* { user, setUser } */
+  //nuevo
+  const { token } = useToken();
+  const { data, loading, refetch } = useQuery(USER_QUERY);
+  React.useEffect(() => {
+    refetch();
+  }, [refetch, token]);
+  const { user } = data || {};
+
+
   const [updateUserMutation] = useMutation(UPDATE_USER_MUTATION);
   const [values, setValues] = useState({
-    firstname: user.firstname,
+    firstname: "",
+    lastname: "",
+    email: "",
+    ci: "",
+    city: "",
+    country: ""
+    /* firstname: user.firstname,
     lastname: user.lastname,
     email: user.email,
     ci: user.dni,
     city: user.city,
-    country: user.country
+    country: user.country */
   });
+
+  if (loading) {
+    return <p>Aguarde un momento...</p>
+  }
 
   const handleChange = (event) => {
     setValues({
@@ -89,7 +123,7 @@ const ProfileDetails = ({ user, setUser }) => {
         }
       }
     });
-    setUser(data.updateUser);
+    //setUser(data.updateUser);
   }
 
   return (
@@ -120,7 +154,7 @@ const ProfileDetails = ({ user, setUser }) => {
                 name="firstname"
                 onChange={handleChange}
                 required
-                value={values.firstname}
+                value={user.firstname}
                 variant="outlined"
               />
             </Grid>
@@ -135,7 +169,7 @@ const ProfileDetails = ({ user, setUser }) => {
                 name="lastname"
                 onChange={handleChange}
                 required
-                value={values.lastname}
+                value={user.lastname}
                 variant="outlined"
               />
             </Grid>
@@ -150,7 +184,7 @@ const ProfileDetails = ({ user, setUser }) => {
                 name="email"
                 onChange={handleChange}
                 required
-                value={values.email}
+                value={user.email}
                 variant="outlined"
               />
             </Grid>
@@ -164,7 +198,7 @@ const ProfileDetails = ({ user, setUser }) => {
                 label="C.I"
                 name="ci"
                 onChange={handleChange}
-                value={values.ci}
+                value={user.ci}
                 /*InputProps={{
                   readOnly: true
                 }}*/
@@ -183,7 +217,7 @@ const ProfileDetails = ({ user, setUser }) => {
                 name="country"
                 onChange={handleChange}
                 disabled
-                value={values.country}
+                value={user.country}
                 variant="outlined"
               />
             </Grid>
@@ -200,7 +234,7 @@ const ProfileDetails = ({ user, setUser }) => {
                 required
                 select
                 SelectProps={{ native: true }}
-                value={values.city}
+                value={user.city}
                 variant="outlined"
               >
                 {cities.map((option) => (

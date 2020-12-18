@@ -21,6 +21,26 @@ import PublishIcon from '@material-ui/icons/Publish';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import StoreIcon from '@material-ui/icons/Store';
 
+import { gql, useQuery } from '@apollo/client';
+import { useToken } from "../AuthProvider";
+
+const USER_QUERY = gql`
+  query User{
+    user{
+        id
+        firstname
+        token
+        lastname
+        city
+        country
+        email
+        dni
+        profileImage
+        medalAchievement
+    }
+  }
+`;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -53,7 +73,18 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Header = ({ user, setUser }) => {
+const Header = () => {/* { user, setUser } */
+
+  //nuevo
+  const { token } = useToken();
+  const { data, loading, refetch } = useQuery(USER_QUERY);
+  React.useEffect(() => {
+    refetch();
+  }, [refetch, token]);
+  const { user } = data || {};
+
+
+
   //memu
   const [state, setState] = React.useState({
     left: false
@@ -92,7 +123,7 @@ const Header = ({ user, setUser }) => {
           </ListItem> </>
           : <></>}
         {user ? <ListItem button key='Mi perfil' component={Link} to={'/account'}>
-          <ListItemIcon>{user.avatar ? <Avatar src={user.avatar}/> : <Avatar>?</Avatar>}</ListItemIcon>
+          <ListItemIcon>{user.avatar ? <Avatar src={user.avatar} /> : <Avatar>?</Avatar>}</ListItemIcon>
           <ListItemText primary='Mi perfil' />
         </ListItem> :
           <ListItem button key='Ingresar' component={Link} to={'/login'}>
@@ -109,7 +140,7 @@ const Header = ({ user, setUser }) => {
   const classes = useStyles();
   const history = useHistory();
   const handleClick = () => {
-    setUser(null);
+    //setUser(null);
     history.push('/login');
   }
 

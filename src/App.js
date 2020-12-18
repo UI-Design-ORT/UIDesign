@@ -15,7 +15,6 @@ import client from "./apollo";
 
 function App() {
   const [user, setUser] = React.useState();
-
   return (
     <AuthProvider>
       <ApolloProvider client={client}>
@@ -37,9 +36,12 @@ function App() {
             <Route path="/productUpload">
               <ProductUpload />
             </Route>
-            <PrivateRoute user={user} path="/account">
-              <Account user={user} setUser={setUser} />
-            </PrivateRoute>
+            {/* <PrivateRoute path="/account"> */}{/* user={user} */}
+            {/* <Account /> */}{/* user={user} setUser={setUser} */}
+            {/* </PrivateRoute> */}
+            <Route path="/account">
+              <Account />
+            </Route>
           </Container>
         </Router>
       </ApolloProvider>

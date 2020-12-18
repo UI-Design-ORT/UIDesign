@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link, useHistory } from "react-router-dom";
 import { gql, useMutation } from '@apollo/client';
+import { useToken } from "../AuthProvider";
 
 const LOGIN_MUTATION = gql`
   mutation Login($input: SignInInput!) {
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn({ setUser }) {
+  const { setToken } = useToken();
   const [signInMutation] = useMutation(LOGIN_MUTATION);
   const classes = useStyles();
   const history = useHistory();
@@ -62,12 +64,20 @@ export default function SignIn({ setUser }) {
   const handleClick = async (event) => {
     event.preventDefault();
     event.stopPropagation();
+    const { email, password } = values;
     const { data } = await signInMutation({
       variables: {
-        input: values
+        input: {
+          email,
+          password
+        }
       }
     });
-    setUser(data.signIn);
+    const {
+      signIn: { token }
+    } = data;
+    setToken(token);
+    //setUser(data.signIn);
     history.push('/account');
   }
 

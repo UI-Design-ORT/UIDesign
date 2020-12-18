@@ -24,7 +24,8 @@ const User = mongoose.model("User", {
     dni: String,
     country: String,
     city: String,
-    profileImage: String
+    profileImage: String,
+    medalAchievement: String
 });
 
 const ShoppingCart = mongoose.model("ShoppingCart", {

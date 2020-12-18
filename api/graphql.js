@@ -4,13 +4,6 @@ const cors = require("micro-cors")();
 const { resolvers } = require("./resolvers");
 const { typeDefs } = require("./typeDefs");
 
-const { gql } = require('apollo-server');
-
-module.exports = cors((req, res) =>
-  req.method === "OPTIONS" ? res.end() : handler(req, res)
-);
- 
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -33,8 +26,11 @@ const server = new ApolloServer({
     return {};
   }
 });
-
-module.exports = server.createHandler({
+const handler = server.createHandler({
   path: "/api/graphql",
   introspection: true
 });
+
+module.exports = cors((req, res) =>
+  req.method === "OPTIONS" ? res.end() : handler(req, res)
+);
