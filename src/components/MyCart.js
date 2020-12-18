@@ -91,16 +91,15 @@ const CART_QUERY = gql`
 const MyCart = () => {
     const classes = useStyles();
     const [processOrderMutation] = useMutation(PROCESS_ORDER_MUTATION);
-    //const [removeProductFromCartMutation] = useMutation(REMOVE_PROD_FROM_CART_MUTATION);
     const { data } = useQuery(CART_QUERY);
     const [products, setProducts] = React.useState([]);
-    if(data){
+    if (data) {
         setProducts(data.products);
     }
-    
+
     const processOrder = async () => {
         const { outputCart } = await processOrderMutation();
-        setProducts(outputCart.shoppingCart.products); 
+        setProducts(outputCart.shoppingCart.products);
     };
 
     /*const onRemoveProductClick = async(event) => {

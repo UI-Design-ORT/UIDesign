@@ -3,7 +3,7 @@ import { Container, Grid } from '@material-ui/core';
 import Profile from './Profile';
 import ProfileDetails from './ProfileDetails';
 
-const Account = () => {/* {user, setUser} */
+const Account = () => {
 
   return (
     <Container maxWidth="lg">
@@ -17,7 +17,7 @@ const Account = () => {/* {user, setUser} */
           md={6}
           xs={12}
         >
-          <Profile />{/* user={user} setUser={setUser} */}
+          <Profile />
         </Grid>
         <Grid
           item
@@ -25,7 +25,7 @@ const Account = () => {/* {user, setUser} */
           md={6}
           xs={12}
         >
-          <ProfileDetails />{/* user={user} setUser={setUser} */}
+          <ProfileDetails />
         </Grid>
       </Grid>
     </Container>

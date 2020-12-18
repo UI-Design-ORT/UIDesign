@@ -69,8 +69,7 @@ const cities = [
   }
 ];
 
-const ProfileDetails = () => {/* { user, setUser } */
-  //nuevo
+const ProfileDetails = () => {
   const { token } = useToken();
   const { data, loading, refetch } = useQuery(USER_QUERY);
   React.useEffect(() => {
@@ -87,12 +86,6 @@ const ProfileDetails = () => {/* { user, setUser } */
     ci: "",
     city: "",
     country: ""
-    /* firstname: user.firstname,
-    lastname: user.lastname,
-    email: user.email,
-    ci: user.dni,
-    city: user.city,
-    country: user.country */
   });
 
   if (loading) {
@@ -123,7 +116,6 @@ const ProfileDetails = () => {/* { user, setUser } */
         }
       }
     });
-    //setUser(data.updateUser);
   }
 
   return (

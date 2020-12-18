@@ -9,7 +9,6 @@ import {
   Divider,
   Typography,
   makeStyles,
-  useRadioGroup
 } from '@material-ui/core';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import logo0 from '../assets/0productos.png';
@@ -68,37 +67,15 @@ const toBase64 = file => new Promise((resolve, reject) => {
   reader.onerror = error => reject(error);
 });
 
-const Profile = () => {/* { user, setUser } */
+const Profile = () => {
   const classes = useStyles();
-
-  /* const [medal, setMedal] = React.useState({
-    achievement: 'No has subido productos',
-    logo: logo
-  }) */
 
   var achievement = 'No has subido productos';
   var logo = logo0;
 
-
   const { token } = useToken();
   const { data, loading, refetch } = useQuery(USER_QUERY);
   React.useEffect(() => {
-    /* if (user?.medalAchievement === 'level1') {
-      setMedal({
-        achievement: 'Has subido al menos 1 producto!',
-        logo: logo1
-      })
-    } else if (user?.medalAchievement === 'level2') {
-      setMedal({
-        achievement: '5 productos subidos o mas!',
-        logo: logo2
-      })
-    } else if (user?.medalAchievement === 'level3') {
-      setMedal({
-        achievement: '10 productos subidos o mas!',
-        logo: logo3
-      })
-    }; */
     refetch();
   }, [refetch, token]);
   const { user } = data || {};
@@ -115,8 +92,6 @@ const Profile = () => {/* { user, setUser } */
       achievement = '10 productos subidos o más!';
       logo = logo3;
     };
-
-    console.log('usuario: ' + user.medalAchievement);
   }
 
   const [updateUserMutation] = useMutation(UPDATE_USER_MUTATION);
@@ -124,11 +99,6 @@ const Profile = () => {/* { user, setUser } */
     avatar: "user.profileImage",
     raw: ''
   })
-
-  /* if (loading) {
-    return <p>Aguarde un momento...</p>
-  } */
-  //setUser(userData);
 
 
   const handleImageChange = async (event) => {
@@ -147,8 +117,6 @@ const Profile = () => {/* { user, setUser } */
         }
       }
     })
-    //setUser(data.updateUser);
-    console.log("Imagen seleccionada: " + avatar.raw);
   }
 
 

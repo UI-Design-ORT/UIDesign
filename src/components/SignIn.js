@@ -77,7 +77,6 @@ export default function SignIn({ setUser }) {
       signIn: { token }
     } = data;
     setToken(token);
-    //setUser(data.signIn);
     history.push('/account');
   }
 

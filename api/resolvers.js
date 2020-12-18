@@ -7,25 +7,16 @@ const { generateToken } = require("./auth");
 const userResolver = async (root, args, ctx, info) => {
     const userId = ctx.user._id;
     const user = await User.findById(userId);
-    console.log('userId : ' + userId);
 
     const products = await Product.find();
-    /* var userProducts = products.filter(function (product) {
-        console.log('id de product ' + product.userId);
-        return product.userId === userId;
-    }); */
 
     var userProducts = [];
     products.forEach(function (product) {
-        console.log('productUserId == userId? : ' + (String(product.userId) + ' ' + String(userId)));
         if (String(product.userId) === String(userId)) {
-            console.log('Agregado');
             userProducts.push(product);
         }
     })
 
-    console.log(user.firstname);
-    console.log("cantidad de productos del usuario " + userProducts.length);
     user.products = userProducts;
     if (user.medalAchievement !== undefined) {
         if (userProducts.length > 0 && userProducts.length < 5) {

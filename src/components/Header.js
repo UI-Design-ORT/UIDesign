@@ -73,9 +73,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Header = () => {/* { user, setUser } */
+const Header = () => {
 
-  //nuevo
   const { token } = useToken();
   const { data, loading, refetch } = useQuery(USER_QUERY);
   React.useEffect(() => {
@@ -140,7 +139,6 @@ const Header = () => {/* { user, setUser } */
   const classes = useStyles();
   const history = useHistory();
   const handleClick = () => {
-    //setUser(null);
     history.push('/login');
   }
 
@@ -151,7 +149,6 @@ const Header = () => {/* { user, setUser } */
         <div>
           {['left'].map((anchor) => (
             <React.Fragment key={anchor}>
-              {/* <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button> */}
               <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer(anchor, true)}>
                 <MenuIcon />
               </IconButton>
@@ -162,9 +159,6 @@ const Header = () => {/* { user, setUser } */
           ))}
         </div>
 
-        {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton> */}
         <Typography component={Link} to={'/products'} variant="h6" className={classes.title}>
           Mi Ropa
         </Typography>
